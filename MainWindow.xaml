@@ -34,6 +34,7 @@
 
                 <TextBox 
                     Grid.Column="0"
+                    Text="{Binding SelectedPath}"
                     IsEnabled="False"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
