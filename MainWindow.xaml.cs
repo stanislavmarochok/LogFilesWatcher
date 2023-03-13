@@ -1,6 +1,7 @@
-﻿using LogFilesWatcher.UserControls;
-using System.Collections.ObjectModel;
+﻿using LogFilesWatcher.Controllers;
+using System;
 using System.Windows;
+using Forms = System.Windows.Forms;
 
 namespace LogFilesWatcher
 {
@@ -12,19 +13,31 @@ namespace LogFilesWatcher
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
-            HistoryItems.Add(new HistoryItemControl());
         }
 
-
-        private ObservableCollection<HistoryItemControl> historyItems;
-        public ObservableCollection<HistoryItemControl> HistoryItems
+        private void BrowseDirectoryButton_Click(object sender, RoutedEventArgs e)
         {
-            get
+            using (Forms.FolderBrowserDialog dialog = new Forms.FolderBrowserDialog())
             {
-                if (historyItems == null)
-                    historyItems = new ObservableCollection<HistoryItemControl>();
-                return historyItems;
+                Forms.DialogResult result = dialog.ShowDialog();
+                if (result != Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                string selectedPath = dialog.SelectedPath;
+                try
+                {
+                    ((HistoryItemsController)DataContext).SelectedPathUpdated(selectedPath);
+                }
+                catch (InvalidCastException ex)
+                {
+                    MessageBox.Show("Invalid cast error occured when trying to update the selected path");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Some unhandled error occured when trying to update the selected path.\nError:\n{ex.Message}");
+                }
             }
         }
     }

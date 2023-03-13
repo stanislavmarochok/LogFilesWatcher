@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace LogFilesWatcher.Controllers
 {
-    internal class HistoryItemsController
+    internal class HistoryItemsController : IHistoryItemsController
     {
         private IList<HistoryItem> _HistoryItemsList;
 
@@ -42,6 +42,16 @@ namespace LogFilesWatcher.Controllers
             {
                 mUpdater = value;
             }
+        }
+
+        public void SelectedPathUpdated(string newSelectedPath)
+        {
+            UpdateDirectoryContent();
+        }
+
+        private void UpdateDirectoryContent()
+        {
+            // todo: update content here
         }
 
         private class Updater : ICommand
