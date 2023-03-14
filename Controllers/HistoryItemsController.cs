@@ -6,9 +6,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace LogFilesWatcher.Controllers
@@ -55,20 +52,6 @@ namespace LogFilesWatcher.Controllers
         }
         #endregion
 
-        public ICommand UpdateCommand
-        {
-            get
-            {
-                if (mUpdater == null)
-                    mUpdater = new Updater();
-                return mUpdater;
-            }
-            set
-            {
-                mUpdater = value;
-            }
-        }
-
         public void SetSelectedPath(string selectedPath)
         {
             SelectedPath = selectedPath;
@@ -87,7 +70,6 @@ namespace LogFilesWatcher.Controllers
                 List<FileItem> addedFiles = new List<FileItem>();
                 List<FileItem> removedFiles = new List<FileItem>();
 
-                // check for modified files or added files
                 GetLastFiles:
                     if (!directoriesContentLastVersionsLists.TryGetValue(SelectedPath, out List<FileItem>? filesLastVersionInSelectedPath))
                     {
@@ -97,7 +79,6 @@ namespace LogFilesWatcher.Controllers
 
                 foreach (FileItem oldFile in filesLastVersionInSelectedPath)
                 {
-                    // if the old file still exists in the filesystem
                     if (File.Exists(oldFile.FileFullPath))
                     {
                         FileInfo newFileInfo = new FileInfo(oldFile.FileFullPath);
@@ -195,25 +176,6 @@ namespace LogFilesWatcher.Controllers
             }
 
             return addedHistoryItems;
-        }
-
-        private class Updater : ICommand
-        {
-            #region ICommand Members  
-
-            public bool CanExecute(object parameter)
-            {
-                return true;
-            }
-
-            public event EventHandler CanExecuteChanged;
-
-            public void Execute(object parameter)
-            {
-
-            }
-
-            #endregion
         }
 
         private class FileItem
