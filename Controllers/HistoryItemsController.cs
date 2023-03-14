@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace LogFilesWatcher.Controllers
@@ -108,13 +109,15 @@ namespace LogFilesWatcher.Controllers
                 foreach (FileItem removedFile in removedFiles)
                     filesLastVersionInSelectedPath.RemoveAll(x => x.FileFullPath.Equals(removedFile.FileFullPath));
 
-                List<List<HistoryItem>> allNewHistoryItemsLists = new List<List<HistoryItem>>
+                List<Task<List<HistoryItem>>> allNewHistoryItemsLists = new List<Task<List<HistoryItem>>>
                 {
-                    AddItemsToHistoryItems(addedFiles, "Added"),
-                    AddItemsToHistoryItems(removedFiles, "Removed"),
-                    AddItemsToHistoryItems(modifiedFiles, "Modified")
+                    Task<List<HistoryItem>>.Factory.StartNew(() => AddItemsToHistoryItems(addedFiles, "Added")),
+                    Task<List<HistoryItem>>.Factory.StartNew(() => AddItemsToHistoryItems(removedFiles, "Removed")),
+                    Task<List<HistoryItem>>.Factory.StartNew(() => AddItemsToHistoryItems(modifiedFiles, "Modified"))
                 };
-                List<HistoryItem> allNewHistoryItems = allNewHistoryItemsLists.SelectMany(list => list).ToList();
+                Task.WaitAll(allNewHistoryItemsLists.ToArray());
+
+                List<HistoryItem> allNewHistoryItems = allNewHistoryItemsLists.SelectMany(list => list.Result).ToList();
                 if (allNewHistoryItems.Any())
                 {
                     foreach (var item in allNewHistoryItems)
