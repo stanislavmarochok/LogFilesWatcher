@@ -2,7 +2,9 @@
 {
     internal interface IHistoryItemsController
     {
-        void SelectedPathUpdated(string newSelectedPath);
+        string SelectedPath { get; set; }
+        void SetSelectedPath(string selectedPath);
         void UpdateDirectoryContent();
+        void ClearHistory();
     }
 }

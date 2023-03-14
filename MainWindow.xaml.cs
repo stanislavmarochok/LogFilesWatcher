@@ -28,7 +28,7 @@ namespace LogFilesWatcher
                 string selectedPath = dialog.SelectedPath;
                 try
                 {
-                    ((HistoryItemsController)DataContext).SelectedPathUpdated(selectedPath);
+                    ((HistoryItemsController)DataContext).SetSelectedPath(selectedPath);
                 }
                 catch (InvalidCastException ex)
                 {
@@ -39,6 +39,11 @@ namespace LogFilesWatcher
                     MessageBox.Show($"Some unhandled error occured when trying to update the selected path.\nError:\n{ex.Message}");
                 }
             }
+        }
+
+        private void CheckForUpdatesButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((HistoryItemsController)DataContext).UpdateDirectoryContent();
         }
     }
 }

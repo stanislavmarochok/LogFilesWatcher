@@ -5,48 +5,48 @@ namespace LogFilesWatcher.Models
 {
     public class HistoryItem : INotifyPropertyChanged
     {
-        private int _id;
+        private string _status;
         private string _title;
         private DateTime _timestamp;
         private int _version;
 
-        public int Id 
+        public string Status 
         { 
-            get => _id; 
+            get => _status; 
             set 
-            { 
-                _id = value;
-                OnPropertyChanged(nameof(Id));
+            {
+                _status = value;
+                OnPropertyChanged(nameof(Status));
             }
         }
         
-        public string Title
+        public string FileName
         {
             get => _title;
             set
             {
                 _title = value;
-                OnPropertyChanged(nameof(Title));
+                OnPropertyChanged(nameof(FileName));
             }
         }
 
-        public DateTime Timestamp
+        public DateTime LastModifiedTime
         {
             get => _timestamp;
             set
             {
                 _timestamp = value;
-                OnPropertyChanged(nameof(Timestamp));
+                OnPropertyChanged(nameof(LastModifiedTime));
             }
         }
 
-        public int Version
+        public int FileVersion
         {
             get => _version;
             set
             {
                 _version = value;
-                OnPropertyChanged(nameof(Version));
+                OnPropertyChanged(nameof(FileVersion));
             }
         }
 

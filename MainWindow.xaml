@@ -34,7 +34,7 @@
 
                 <TextBox 
                     Grid.Column="0"
-                    Text="{Binding SelectedPath}"
+                    Text="{Binding Path=SelectedPath}"
                     IsEnabled="False"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -56,9 +56,11 @@
 
             <Button 
                 Grid.Row="2"
+                Name="CheckForUpdatesButton"
                 Margin="10"
                 Background="LightGreen"
-                BorderThickness="0">
+                BorderThickness="0" 
+                Click="CheckForUpdatesButton_Click">
                 <!-- Button here -->
                 <TextBlock
                     FontSize="20"
@@ -74,21 +76,21 @@
                 <ListView.View>
                     <GridView x:Name="grdTest">
                         <GridViewColumn 
-                            Header="Id" 
-                            DisplayMemberBinding="{Binding Id}"  
-                            Width="50"/>
+                            Header="Status" 
+                            DisplayMemberBinding="{Binding Status}"  
+                            Width="50" />
                         <GridViewColumn 
-                            Header="Title" 
-                            DisplayMemberBinding="{Binding Title}"  
-                            Width="80" />
+                            Header="FileName" 
+                            DisplayMemberBinding="{Binding FileName}"  
+                            Width="250" />
                         <GridViewColumn 
-                            Header="Timestamp" 
-                            DisplayMemberBinding="{Binding Timestamp}" 
+                            Header="LastModifiedTime" 
+                            DisplayMemberBinding="{Binding LastModifiedTime}" 
                             Width="100" />
                         <GridViewColumn 
                             Header="Version" 
                             DisplayMemberBinding="{Binding Version}" 
-                            Width="80" />
+                            Width="100" />
                     </GridView>
                 </ListView.View>
             </ListView>
