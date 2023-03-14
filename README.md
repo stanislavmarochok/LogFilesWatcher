@@ -7,7 +7,7 @@ The application is implemented in .NET 6. It uses MVC pattern for the workflow m
 # How to use it?
 First of all, download the entire code from the repository.
 Then, build the solution.
-Then, run the build .exe file.
+Then, run the built .exe file.
 
 # User documentation
 When you started the program, you will see such a screen:
