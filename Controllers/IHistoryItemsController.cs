@@ -5,6 +5,7 @@
         string SelectedPath { get; set; }
         void SetSelectedPath(string selectedPath);
         void UpdateDirectoryContent();
-        void ClearHistory();
+        void ClearBoard();
+        void ClearHistoryCaches();
     }
 }

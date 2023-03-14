@@ -45,5 +45,15 @@ namespace LogFilesWatcher
         {
             ((HistoryItemsController)DataContext).UpdateDirectoryContent();
         }
+
+        private void ClearBoardButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((HistoryItemsController)DataContext).ClearBoard();
+        }
+
+        private void ClearHistoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((HistoryItemsController)DataContext).ClearHistoryCaches();
+        }
     }
 }

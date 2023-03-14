@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="LogFilesWatcher"
         Height="600"
-        Width="500"
+        Width="700"
         ResizeMode="CanMinimize">
     <Grid>
         <Grid>
@@ -78,15 +78,15 @@
                         <GridViewColumn 
                             Header="Status" 
                             DisplayMemberBinding="{Binding Status}"  
-                            Width="50" />
+                            Width="70" />
                         <GridViewColumn 
                             Header="FileName" 
                             DisplayMemberBinding="{Binding FileName}"  
-                            Width="250" />
+                            Width="380" />
                         <GridViewColumn 
                             Header="LastModifiedTime" 
-                            DisplayMemberBinding="{Binding LastModifiedTime}" 
-                            Width="100" />
+                            DisplayMemberBinding="{Binding LastModifiedTimeFormatted}" 
+                            Width="150" />
                         <GridViewColumn 
                             Header="Version" 
                             DisplayMemberBinding="{Binding Version}" 
@@ -95,18 +95,42 @@
                 </ListView.View>
             </ListView>
 
-            <Button 
-                Grid.Row="4"
-                Margin="10"
-                Background="Orange"
-                BorderThickness="0">
-                <!-- Button here -->
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="Bold">
-                    Clear history
-                </TextBlock>
-            </Button>
+            <Grid
+                Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button 
+                    Name="ClearBoardButton"
+                    Margin="10"
+                    Background="Orange"
+                    BorderThickness="0" 
+                    Click="ClearBoardButton_Click">
+                        <!-- Button here -->
+                        <TextBlock
+                        FontSize="17"
+                        FontWeight="Bold">
+                        Clear Board
+                        </TextBlock>
+                </Button>
+
+                <Button 
+                    Grid.Column="1"
+                    Name="ClearHistoryButton"
+                    Margin="10"
+                    Background="Orchid"
+                    BorderThickness="0" 
+                    Click="ClearHistoryButton_Click">
+                    <!-- Button here -->
+                    <TextBlock
+                        FontSize="17"
+                        FontWeight="Bold">
+                        Clear history (caches)
+                    </TextBlock>
+                </Button>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

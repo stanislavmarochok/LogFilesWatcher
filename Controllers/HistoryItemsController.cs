@@ -18,20 +18,11 @@ namespace LogFilesWatcher.Controllers
         private string lastSelectedPath = string.Empty;
 
         private ObservableCollection<HistoryItem> _historyItemsList;
-        private Dictionary<string, List<FileItem>> filesLastVersions = new Dictionary<string, List<FileItem>>();
+        private Dictionary<string, List<FileItem>> directoriesContentLastVersionsLists = new Dictionary<string, List<FileItem>>();
 
         public HistoryItemsController()
         {
-            _historyItemsList = new ObservableCollection<HistoryItem>
-            {
-                new HistoryItem 
-                {
-                    Status = "Added",
-                    FileVersion = 0,
-                    LastModifiedTime = DateTime.Now,
-                    FileName = "Initial"
-                },
-            };
+            _historyItemsList = new ObservableCollection<HistoryItem>();
         }
 
         public ObservableCollection<HistoryItem> HistoryItems
@@ -98,9 +89,9 @@ namespace LogFilesWatcher.Controllers
 
                 // check for modified files or added files
                 GetLastFiles:
-                    if (!filesLastVersions.TryGetValue(SelectedPath, out List<FileItem>? filesLastVersionInSelectedPath))
+                    if (!directoriesContentLastVersionsLists.TryGetValue(SelectedPath, out List<FileItem>? filesLastVersionInSelectedPath))
                     {
-                        filesLastVersions.Add(SelectedPath, new List<FileItem>());
+                        directoriesContentLastVersionsLists.Add(SelectedPath, new List<FileItem>());
                         goto GetLastFiles;
                     }
 
@@ -133,9 +124,9 @@ namespace LogFilesWatcher.Controllers
 
                 List<List<HistoryItem>> allNewHistoryItemsLists = new List<List<HistoryItem>>
                 {
-                    AddAddedItemsToHistoryItems(addedFiles),
-                    AddRemovedItemsToHistoryItems(removedFiles),
-                    AddModifiedItemsToHistoryItems(modifiedFiles)
+                    AddItemsToHistoryItems(addedFiles, "Added"),
+                    AddItemsToHistoryItems(removedFiles, "Removed"),
+                    AddItemsToHistoryItems(modifiedFiles, "Modified")
                 };
                 List<HistoryItem> allNewHistoryItems = allNewHistoryItemsLists.SelectMany(list => list).ToList();
                 if (allNewHistoryItems.Any())
@@ -159,9 +150,17 @@ namespace LogFilesWatcher.Controllers
             }
         }
 
-        public void ClearHistory()
+        public void ClearBoard()
         {
             HistoryItems.Clear();
+        }
+
+        public void ClearHistoryCaches()
+        {
+            foreach(KeyValuePair<string, List<FileItem>> directoryLastVersion in directoriesContentLastVersionsLists) 
+            {
+                directoryLastVersion.Value.Clear();
+            }
         }
 
         private HistoryItem CreateNoChangesHistoryItem()
@@ -175,14 +174,14 @@ namespace LogFilesWatcher.Controllers
             };
         }
 
-        private List<HistoryItem> AddAddedItemsToHistoryItems(List<FileItem> addedFiles)
+        private List<HistoryItem> AddItemsToHistoryItems(List<FileItem> addedFiles, string status)
         {
             List<HistoryItem> addedHistoryItems = new List<HistoryItem>();
             foreach (FileItem fileItem in addedFiles)
             {
                 HistoryItem newHistoryItem = new HistoryItem
                 {
-                    Status = "Added",
+                    Status = status,
                     FileName = fileItem.FileFullPath,
                     FileVersion = 1,
                     LastModifiedTime = fileItem.LastModifiedTime ?? DateTime.MinValue, // TODO: make a NORMAL solution here
@@ -191,42 +190,6 @@ namespace LogFilesWatcher.Controllers
             }
 
             return addedHistoryItems;
-        }
-
-        private List<HistoryItem> AddRemovedItemsToHistoryItems(List<FileItem> removedFiles)
-        {
-            List<HistoryItem> removedHistoryItems = new List<HistoryItem>();
-            foreach (FileItem fileItem in removedFiles)
-            {
-                HistoryItem newHistoryItem = new HistoryItem
-                {
-                    Status = "Removed",
-                    FileName = SelectedPath,
-                    FileVersion = 1,
-                    LastModifiedTime = fileItem.LastModifiedTime ?? DateTime.MinValue, // TODO: make a NORMAL solution here
-                };
-                removedHistoryItems.Add(newHistoryItem);
-            }
-
-            return removedHistoryItems;
-        }
-
-        private List<HistoryItem> AddModifiedItemsToHistoryItems(List<FileItem> modifiedFiles)
-        {
-            List<HistoryItem> modifiedHistoryItems = new List<HistoryItem>();
-            foreach (FileItem fileItem in modifiedFiles)
-            {
-                HistoryItem newHistoryItem = new HistoryItem
-                {
-                    Status = "Modified",
-                    FileName = SelectedPath,
-                    FileVersion = 1,
-                    LastModifiedTime = fileItem.LastModifiedTime ?? DateTime.MinValue, // TODO: make a NORMAL solution here
-                };
-                modifiedHistoryItems.Add(newHistoryItem);
-            }
-
-            return modifiedHistoryItems;
         }
 
         private class Updater : ICommand

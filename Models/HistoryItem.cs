@@ -37,7 +37,13 @@ namespace LogFilesWatcher.Models
             {
                 _timestamp = value;
                 OnPropertyChanged(nameof(LastModifiedTime));
+                OnPropertyChanged(nameof(LastModifiedTimeFormatted));
             }
+        }
+
+        public string LastModifiedTimeFormatted
+        {
+            get => LastModifiedTime.ToString("yyyy-mm-dd HH:mm:ss");
         }
 
         public int FileVersion
