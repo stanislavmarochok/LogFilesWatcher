@@ -82,15 +82,15 @@
                         <GridViewColumn 
                             Header="FileName" 
                             DisplayMemberBinding="{Binding FileName}"  
-                            Width="380" />
+                            Width="370" />
                         <GridViewColumn 
                             Header="LastModifiedTime" 
                             DisplayMemberBinding="{Binding LastModifiedTimeFormatted}" 
                             Width="150" />
                         <GridViewColumn 
-                            Header="Version" 
-                            DisplayMemberBinding="{Binding Version}" 
-                            Width="100" />
+                            Header="FileVersion" 
+                            DisplayMemberBinding="{Binding FileVersion}" 
+                            Width="70" />
                     </GridView>
                 </ListView.View>
             </ListView>

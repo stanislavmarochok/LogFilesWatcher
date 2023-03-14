@@ -7,7 +7,7 @@ namespace LogFilesWatcher.Models
     {
         private string _status;
         private string _title;
-        private DateTime _timestamp;
+        private DateTime? _timestamp;
         private int _version;
 
         public string Status 
@@ -30,7 +30,7 @@ namespace LogFilesWatcher.Models
             }
         }
 
-        public DateTime LastModifiedTime
+        public DateTime? LastModifiedTime
         {
             get => _timestamp;
             set
@@ -43,7 +43,7 @@ namespace LogFilesWatcher.Models
 
         public string LastModifiedTimeFormatted
         {
-            get => LastModifiedTime.ToString("yyyy-mm-dd HH:mm:ss");
+            get => LastModifiedTime.HasValue ? LastModifiedTime.Value.ToString("yyyy-mm-dd HH:mm:ss") : string.Empty;
         }
 
         public int FileVersion

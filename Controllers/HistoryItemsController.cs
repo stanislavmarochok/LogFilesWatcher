@@ -103,7 +103,9 @@ namespace LogFilesWatcher.Controllers
                         FileInfo newFileInfo = new FileInfo(oldFile.FileFullPath);
                         if (newFileInfo.LastWriteTimeUtc != oldFile.LastModifiedTime)
                         {
-                            modifiedFiles.Add(new FileItem(oldFile.FileFullPath, newFileInfo.LastWriteTimeUtc));
+                            modifiedFiles.Add(new FileItem(oldFile.FileFullPath, newFileInfo.LastWriteTimeUtc, oldFile.Version + 1));
+                            oldFile.Version += 1;
+                            oldFile.LastModifiedTime = newFileInfo.LastWriteTimeUtc;
                         }
                     }
                     else
@@ -112,15 +114,18 @@ namespace LogFilesWatcher.Controllers
                     }
                 }
 
-                string[] modifiedOrRemovedFileNames = modifiedFiles.Concat(addedFiles).DistinctBy(x => x.FileFullPath).Select(x => x.FileFullPath).ToArray();
+                string[] modifiedOrRemovedFileNames = modifiedFiles.Concat(removedFiles).DistinctBy(x => x.FileFullPath).Select(x => x.FileFullPath).ToArray();
                 string[] allFilesInSelectedPath = Directory.GetFiles(SelectedPath);
                 addedFiles = allFilesInSelectedPath
                     .Where(file => !modifiedOrRemovedFileNames.Contains(file))
                     .Where(file => !filesLastVersionInSelectedPath.Select(x => x.FileFullPath).Contains(file))
-                    .Select(file => new FileItem(file, new FileInfo(file).LastWriteTimeUtc)).ToList();
+                    .Select(file => new FileItem(file, new FileInfo(file).LastWriteTimeUtc, 1)).ToList();
 
                 foreach (FileItem addedFile in addedFiles)
                     filesLastVersionInSelectedPath.Add(addedFile);
+
+                foreach (FileItem removedFile in removedFiles)
+                    filesLastVersionInSelectedPath.RemoveAll(x => x.FileFullPath.Equals(removedFile.FileFullPath));
 
                 List<List<HistoryItem>> allNewHistoryItemsLists = new List<List<HistoryItem>>
                 {
@@ -169,22 +174,22 @@ namespace LogFilesWatcher.Controllers
             {
                 Status = "~",
                 FileName = "no changes since last check",
-                LastModifiedTime = DateTime.Now,
+                LastModifiedTime = null,
                 FileVersion = 0
             };
         }
 
-        private List<HistoryItem> AddItemsToHistoryItems(List<FileItem> addedFiles, string status)
+        private List<HistoryItem> AddItemsToHistoryItems(List<FileItem> files, string status)
         {
             List<HistoryItem> addedHistoryItems = new List<HistoryItem>();
-            foreach (FileItem fileItem in addedFiles)
+            foreach (FileItem fileItem in files)
             {
                 HistoryItem newHistoryItem = new HistoryItem
                 {
                     Status = status,
                     FileName = fileItem.FileFullPath,
-                    FileVersion = 1,
-                    LastModifiedTime = fileItem.LastModifiedTime ?? DateTime.MinValue, // TODO: make a NORMAL solution here
+                    FileVersion = fileItem.Version,
+                    LastModifiedTime = fileItem.LastModifiedTime ?? null, // TODO: make a NORMAL solution here
                 };
                 addedHistoryItems.Add(newHistoryItem);
             }
@@ -215,11 +220,13 @@ namespace LogFilesWatcher.Controllers
         {
             public string FileFullPath { get; set; }
             public DateTime? LastModifiedTime { get; set; }
+            public int Version { get; set; }
 
-            public FileItem(string fileName, DateTime? lastModified)
+            public FileItem(string fileName, DateTime? lastModified, int version = 1)
             {
                 FileFullPath = fileName;
                 LastModifiedTime = lastModified;
+                Version = version;
             }
         }
     }
